@@ -24,7 +24,15 @@ This tool lists all tests from the given package, prioritizing them in the follo
 
 ## Usage
 
+### GO RUN
+
 `go run github.com/sonalys/gotestfast/entrypoints/gotestfast@latest -input PROJECT_DIR -output CACHE_FILE -pkg ./... (or pkg1,pkg2,...) (-json for JSON logs)`
+
+### GO INSTALL
+
+`go install github.com/sonalys/gotestfast/entrypoints/gotestfast@latest`
+
+`gotestfast -input PROJECT_DIR -output CACHE_FILE -pkg ./...`
 
 ### CI
 
