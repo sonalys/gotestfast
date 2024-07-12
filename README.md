@@ -21,12 +21,26 @@ This tool lists all tests from the given package, prioritizing them in the follo
 * JSON output available for CI
 * Caching of previously failing tests for prioritization
 * Prioritizes new tests as well
+* Coverage support
 
 ## Usage
 
 ### GO RUN
 
-`go run github.com/sonalys/gotestfast/entrypoints/gotestfast@latest -input PROJECT_DIR -output CACHE_FILE -pkg ./... (or pkg1,pkg2,...) (-json for JSON logs)`
+```
+go run github.com/sonalys/gotestfast/entrypoints/gotestfast@latest -help
+
+  -coverprofile string
+        If set, writes a coverage profile to the given file
+  -input string
+        Path to the Go project folder
+  -json
+        Output test results as JSON
+  -output string
+        Path to the output file (default "testlog.json")
+  -pkg string
+        Comma separated list of packages to test (default "./...")
+```
 
 ### GO INSTALL
 
