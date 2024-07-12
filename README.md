@@ -53,6 +53,19 @@ go run github.com/sonalys/gotestfast/entrypoints/gotestfast@latest -help
 For CI, please cache the `CACHE_FILE` for the configured `-output` parameter.  
 Also, set the `-json` flag for JSON logging.
 
+#### Github Actions
+
+```
+- name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        save-always: true
+        path: ~/testlog.json
+        key: ${{ runner.os }}-testcache
+        restore-keys: |
+          ${{ runner.os }}-testcache
+```
+
 ## Contributions
 
 Any issues or ideas are welcome. Just create a new issue.
