@@ -16,36 +16,8 @@ var Logger = log.Logger
 
 var ErrTestFailed = fmt.Errorf("test failed")
 
-func ScanTests(projectFolder, pkg string) ([]Test, error) {
-	cmd := exec.Command("go", "test", "-json", "-list", ".", pkg)
-	cmd.Dir = projectFolder
-	stdErr, err := cmd.StderrPipe()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get stderr pipe: %w", err)
-	}
-	stdOut, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get stdout pipe: %w", err)
-	}
-	if err = cmd.Start(); err != nil {
-		return nil, fmt.Errorf("failed to start command: %w", err)
-	}
-	tests, err := readGoTestList(stdOut)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read tests: %w", err)
-	}
-	if err = cmd.Wait(); err != nil {
-		return nil, fmt.Errorf("failed to wait for command: %w", err)
-	}
-	if exitCode := cmd.ProcessState.ExitCode(); exitCode != 0 {
-		errorOutput, _ := io.ReadAll(stdErr)
-		return nil, fmt.Errorf("failed to run test list: %s", errorOutput)
-	}
-	return tests, nil
-}
-
-func readGoTestList(stdOut io.Reader) ([]Test, error) {
-	var tests []Test
+func readGoTestList(stdOut io.Reader) (Tests, error) {
+	var tests Tests
 	reader := bufio.NewReader(stdOut)
 	for {
 		line, _, err := reader.ReadLine()
@@ -78,7 +50,7 @@ func RunAndSave(projectFolder string, tests Tests, filePath string, coverProfile
 	}
 	log.Info().Msgf("Loaded %d previous test records", len(previousRecords))
 
-	testExecutionOrder := RearrangeTestRecords(previousRecords, current)
+	testExecutionOrder := rearrangeTestRecords(previousRecords, current)
 	log.Info().Msgf("Executing %d tests", len(testExecutionOrder))
 
 	updatedRecords, err := Run(projectFolder, testExecutionOrder, coverProfile)
@@ -185,4 +157,32 @@ func getTestResultString(passed bool) string {
 		return "passed"
 	}
 	return "failed"
+}
+
+func ScanTests(projectFolder, pkg string) (Tests, error) {
+	cmd := exec.Command("go", "test", "-json", "-list", ".", pkg)
+	cmd.Dir = projectFolder
+	stdErr, err := cmd.StderrPipe()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get stderr pipe: %w", err)
+	}
+	stdOut, err := cmd.StdoutPipe()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get stdout pipe: %w", err)
+	}
+	if err = cmd.Start(); err != nil {
+		return nil, fmt.Errorf("failed to start command: %w", err)
+	}
+	tests, err := readGoTestList(stdOut)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read tests: %w", err)
+	}
+	if err = cmd.Wait(); err != nil {
+		return nil, fmt.Errorf("failed to wait for command: %w", err)
+	}
+	if exitCode := cmd.ProcessState.ExitCode(); exitCode != 0 {
+		errorOutput, _ := io.ReadAll(stdErr)
+		return nil, fmt.Errorf("failed to run test list: %s", errorOutput)
+	}
+	return tests, nil
 }

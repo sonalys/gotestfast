@@ -5,16 +5,16 @@ import (
 	"os"
 )
 
-func RearrangeTestRecords(previous, current []TestRecord) []TestRecord {
-	uniqueKeys := make(map[string]bool, len(previous))
+func rearrangeTestRecords(previous, current TestRecords) TestRecords {
+	uniqueKeys := make(map[string]struct{}, len(previous))
 	for _, record := range previous {
 		key := record.Package + "/" + record.Name
-		uniqueKeys[key] = true
+		uniqueKeys[key] = struct{}{}
 	}
 	result := make(TestRecords, 0, len(previous)+len(current))
 	for _, record := range current {
 		key := record.Package + "/" + record.Name
-		if !uniqueKeys[key] {
+		if _, ok := uniqueKeys[key]; !ok {
 			result = append(result, record)
 		}
 	}
@@ -22,7 +22,7 @@ func RearrangeTestRecords(previous, current []TestRecord) []TestRecord {
 	return result
 }
 
-func ReadRecordFile(filePath string) ([]TestRecord, error) {
+func ReadRecordFile(filePath string) (TestRecords, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, nil
