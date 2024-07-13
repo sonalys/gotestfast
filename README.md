@@ -60,7 +60,7 @@ Also, set the `-json` flag for JSON logging.
       uses: actions/cache@v4
       with:
         save-always: true
-        path: ~/testlog.json
+        path: testlog.json
         key: ${{ runner.os }}-testcache
         restore-keys: |
           ${{ runner.os }}-testcache
