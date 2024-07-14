@@ -60,22 +60,22 @@ I am using a work-around with two separate steps, and `if: always()`
 
 ```
 - name: Restore test-log cache
-      uses: actions/cache/restore@v3
-      with:
-      path: testlog.json
-      key: ${{ runner.os }}-testcache
-      restore-keys: |
+  uses: actions/cache/restore@v3
+  with:
+    path: testlog.json
+    key: ${{ runner.os }}-testcache
+    restore-keys: |
       ${{ runner.os }}-testcache
 
 - name: Test
-      run: make test
+  run: make test
 
 - name: Save test-log cache
-      if: always()
-      uses: actions/cache/save@v3
-      with:
-      path: testlog.json
-      key: ${{ runner.os }}-testcache
+  if: always()
+  uses: actions/cache/save@v3
+  with:
+    path: testlog.json
+    key: ${{ runner.os }}-testcache
 ```
 
 ## Contributions
