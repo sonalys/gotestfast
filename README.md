@@ -55,15 +55,27 @@ Also, set the `-json` flag for JSON logging.
 
 #### Github Actions
 
+As of the current moment, `actions/cache@v4` `save-always` flag is not working.
+I am using a work-around with two separate steps, and `if: always()`
+
 ```
-- name: Cache dependencies
-      uses: actions/cache@v4
+- name: Restore test-log cache
+      uses: actions/cache/restore@v3
       with:
-        save-always: true
-        path: testlog.json
-        key: ${{ runner.os }}-testcache
-        restore-keys: |
-          ${{ runner.os }}-testcache
+      path: testlog.json
+      key: ${{ runner.os }}-testcache
+      restore-keys: |
+      ${{ runner.os }}-testcache
+
+- name: Test
+      run: make test
+
+- name: Save test-log cache
+      if: always()
+      uses: actions/cache/save@v3
+      with:
+      path: testlog.json
+      key: ${{ runner.os }}-testcache
 ```
 
 ## Contributions
