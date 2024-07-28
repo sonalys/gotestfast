@@ -25,7 +25,7 @@ This tool lists all tests from the given package, prioritizing them in the follo
 
 ## Usage
 
-### GO RUN
+### Go Run
 
 ```
 go run github.com/sonalys/gotestfast/entrypoints/gotestfast@latest -help
@@ -42,7 +42,7 @@ go run github.com/sonalys/gotestfast/entrypoints/gotestfast@latest -help
         Comma separated list of packages to test (default "./...")
 ```
 
-### GO INSTALL
+### Go Install
 
 `go install github.com/sonalys/gotestfast/entrypoints/gotestfast@latest`
 
